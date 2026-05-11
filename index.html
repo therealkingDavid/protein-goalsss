@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUEL PROTOCOL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --cream2: #f3ede3;
+  --cream3: #e8e0d0;
+  --ink: #1a1710;
+  --ink2: #2d2a20;
+  --warm: #8b6914;
+  --warm2: #c49a28;
+  --warm3: #e8c96a;
+  --warm-bg: #fdf8ec;
+  --green: #2a5c1a;
+  --green2: #4a8a2a;
+  --green-bg: #f0f7ea;
+  --green-border: #c0dca8;
+  --red: #8b1a1a;
+  --red2: #c42a2a;
+  --red-bg: #fdf0f0;
+  --blue: #1a3a6b;
+  --blue2: #2a5a9b;
+  --blue-bg: #f0f4fb;
+  --border: #ddd8cc;
+  --border2: #ccc6b8;
+  --muted: #9a9080;
+  --muted2: #7a7060;
+  --shadow: rgba(26,23,16,0.08);
+  --shadow2: rgba(26,23,16,0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRAIN TEXTURE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* ── HERO ─────────────────────────────────────── */
+.hero {
+  position: relative; z-index: 1;
+  background: var(--ink);
+  padding: 32px 20px 28px;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(196,154,40,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--warm2), transparent);
+}
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--warm2); text-transform: uppercase;
+  margin-bottom: 10px; opacity: .8;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 10vw, 56px);
+  font-weight: 900; line-height: .95;
+  color: var(--cream);
+  letter-spacing: -1px;
+}
+.hero-title em {
+  color: var(--warm2);
+  font-style: italic;
+}
+.hero-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: rgba(250,247,242,.4);
+  margin-top: 10px; line-height: 1.8;
+}
+.hero-target {
+  display: flex; gap: 6px;
+  margin-top: 14px; flex-wrap: wrap;
+}
+.hero-chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px solid rgba(196,154,40,.3);
+  color: var(--warm3); text-transform: uppercase;
+}
+
+/* ── PROTEIN METER ────────────────────────────── */
+.meter-section {
+  position: relative; z-index: 1;
+  background: var(--ink2);
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(196,154,40,.2);
+}
+.meter-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  color: rgba(250,247,242,.4); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.meter-top {
+  display: flex; justify-content: space-between;
+  align-items: baseline; margin-bottom: 8px;
+}
+.meter-current {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px; font-weight: 900;
+  color: var(--warm2); line-height: 1;
+}
+.meter-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: rgba(196,154,40,.6);
+  margin-left: 4px;
+}
+.meter-target {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: rgba(250,247,242,.4);
+  text-align: right;
+}
+.meter-target span {
+  color: var(--warm3); font-size: 14px;
+}
+.meter-bar {
+  height: 4px; background: rgba(255,255,255,.1);
+  border-radius: 2px; overflow: hidden; margin-bottom: 8px;
+}
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--warm), var(--warm2));
+  border-radius: 2px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.meter-zones {
+  display: flex; gap: 6px;
+}
+.meter-zone {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 2px 8px; text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.meter-zone.danger { border-color: rgba(196,42,42,.4); color: #e06060; }
+.meter-zone.ok { border-color: rgba(196,154,40,.4); color: var(--warm3); }
+.meter-zone.good { border-color: rgba(74,138,42,.4); color: #8aca5a; }
+
+/* ── STATS ────────────────────────────────────── */
+.stats {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  border-bottom: 1px solid var(--border);
+  background: var(--cream2);
+}
+.stat {
+  padding: 12px 8px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-v {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--ink); line-height: 1;
+}
+.stat-l {
+  font-family: 'DM Mono', monospace;
+  font-size: 6px; letter-spacing: 1.5px;
+  color: var(--muted); text-transform: uppercase; margin-top: 3px;
+}
+
+/* ── TABS ─────────────────────────────────────── */
+.tabs {
+  position: relative; z-index: 1;
+  display: flex; overflow-x: auto;
+  background: var(--cream); border-bottom: 2px solid var(--border);
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tb {
+  flex-shrink: 0; padding: 12px 16px;
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.tb:hover .tl { color: var(--ink); }
+.tb.on { border-bottom-color: var(--warm); }
+.tb.on .tl { color: var(--warm); }
+.tl {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .5px; color: var(--muted2);
+  display: block; transition: color .2s;
+}
+.ts {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  color: var(--muted); text-transform: uppercase;
+  display: block; margin-top: 1px;
+}
+.tb.on .ts { color: rgba(139,105,20,.6); }
+
+/* ── PANELS ───────────────────────────────────── */
+.panel { display: none; position: relative; z-index: 1; animation: fu .22s ease; }
+.panel.on { display: block; }
+@keyframes fu { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
+
+/* ── FOOD LOGGER ──────────────────────────────── */
+.logger-wrap { padding: 18px; }
+.logger-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--ink); margin-bottom: 4px;
+}
+.logger-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 16px; line-height: 1.6;
+}
+
+/* FOOD CARDS */
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 16px;
+}
+.food-card {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 12px;
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.food-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--border2);
+  transition: background .15s;
+}
+.food-card.egg::before { background: #e8a020; }
+.food-card.tuna::before { background: #2060a0; }
+.food-card.meat::before { background: #a03020; }
+.food-card.chicken::before { background: #d08030; }
+.food-card.beans::before { background: #6a8a30; }
+.food-card.groundnut::before { background: #a06820; }
+.food-card.fish::before { background: #204080; }
+.food-card.custom::before { background: var(--muted); }
+.food-card.logged { background: var(--green-bg); border-color: var(--green-border); }
+.food-card.logged::before { background: var(--green2) !important; }
+.food-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px var(--shadow2); }
+.food-card.logged:hover { transform: none; }
+.food-icon { font-size: 22px; margin-bottom: 5px; }
+.food-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; font-weight: 600;
+  color: var(--ink); line-height: 1.2;
+}
+.food-card.logged .food-name { color: var(--green); }
+.food-protein {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--warm); margin-top: 4px; line-height: 1;
+}
+.food-card.logged .food-protein { color: var(--green2); }
+.food-protein-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-left: 2px;
+}
+.food-portion {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted);
+  margin-top: 3px; letter-spacing: .5px;
+}
+.food-logged-badge {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 10px; display: none;
+}
+.food-card.logged .food-logged-badge { display: block; }
+.food-qty {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+}
+.food-qty-btn {
+  width: 22px; height: 22px;
+  border: 1px solid var(--border2);
+  background: none; cursor: pointer;
+  font-size: 12px; color: var(--muted2);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; border-radius: 50%;
+}
+.food-qty-btn:hover { border-color: var(--warm); color: var(--warm); }
+.food-qty-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: var(--ink); min-width: 16px; text-align: center;
+}
+
+/* CUSTOM FOOD INPUT */
+.custom-food-wrap {
+  background: white; border: 1px solid var(--border);
+  padding: 14px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.cf-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: var(--ink); margin-bottom: 10px;
+}
+.cf-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.cf-inp {
+  flex: 1; padding: 8px 10px;
+  background: var(--cream2); border: 1px solid var(--border);
+  color: var(--ink); font-family: 'Outfit', sans-serif;
+  font-size: 11px; transition: border-color .15s;
+}
+.cf-inp::placeholder { color: var(--muted); }
+.cf-inp:focus { outline: none; border-color: var(--warm2); background: white; }
+.cf-inp.small { width: 80px; flex: none; }
+.cf-add {
+  padding: 8px 16px; background: var(--ink);
+  color: var(--cream); font-family: 'Outfit', sans-serif;
+  font-size: 11px; font-weight: 600; border: none;
+  cursor: pointer; letter-spacing: .5px;
+  transition: background .15s;
+}
+.cf-add:hover { background: var(--ink2); }
+
+/* LOG LIST */
+.log-section { margin-top: 16px; }
+.log-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.log-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.log-entry {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; background: white;
+  border: 1px solid var(--border); margin-bottom: 6px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+.log-entry-left { flex: 1; }
+.log-entry-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; color: var(--ink);
+}
+.log-entry-detail {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-top: 2px; letter-spacing: .5px;
+}
+.log-entry-protein {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700; color: var(--green2);
+}
+.log-entry-del {
+  width: 24px; height: 24px; border: none; background: none;
+  color: var(--muted); cursor: pointer; font-size: 14px;
+  margin-left: 8px; transition: color .15s;
+}
+.log-entry-del:hover { color: var(--red2); }
+
+/* ── FOOD SOURCES GUIDE ───────────────────────── */
+.guide-wrap { padding: 18px; }
+.guide-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+}
+.guide-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 16px; line-height: 1.6;
+}
+.source-card {
+  background: white; border: 1px solid var(--border);
+  padding: 14px 14px 14px 18px; margin-bottom: 10px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.source-card::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+}
+.source-card.tier1::before { background: var(--green2); }
+.source-card.tier2::before { background: var(--warm2); }
+.source-card.tier3::before { background: var(--muted); }
+.source-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.source-left { flex: 1; }
+.source-icon-name { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.source-icon { font-size: 20px; }
+.source-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--ink);
+}
+.source-tier {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 2px;
+  padding: 2px 8px; text-transform: uppercase;
+}
+.source-card.tier1 .source-tier { background: var(--green-bg); color: var(--green2); border: 1px solid var(--green-border); }
+.source-card.tier2 .source-tier { background: var(--warm-bg); color: var(--warm); border: 1px solid rgba(196,154,40,.3); }
+.source-card.tier3 .source-tier { background: var(--cream2); color: var(--muted2); border: 1px solid var(--border); }
+.source-protein-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--warm2); line-height: 1; text-align: right;
+}
+.source-protein-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; color: var(--muted); letter-spacing: 1px;
+  text-align: right; margin-top: 2px;
+}
+.source-detail {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; color: var(--muted2);
+  line-height: 1.5; margin-top: 6px;
+}
+.source-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.source-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 2px 7px; background: var(--cream2);
+  color: var(--muted2); text-transform: uppercase;
+  border: 1px solid var(--border);
+}
+
+/* ── MEAL PLAN ────────────────────────────────── */
+.meal-wrap { padding: 18px; }
+.meal-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+}
+.meal-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 16px; line-height: 1.6;
+}
+.meal-card {
+  background: white; border: 1px solid var(--border);
+  margin-bottom: 10px; overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.meal-header {
+  display: flex; align-items: center;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  background: var(--cream2);
+}
+.meal-time-icon { font-size: 18px; margin-right: 10px; }
+.meal-time-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--ink);
+}
+.meal-time-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-top: 1px; letter-spacing: .5px;
+}
+.meal-protein-badge {
+  margin-left: auto;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; color: var(--warm2);
+}
+.meal-protein-badge span {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-left: 2px;
+}
+.meal-items { padding: 10px 14px; }
+.meal-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--cream3);
+}
+.meal-item:last-child { border-bottom: none; }
+.meal-item-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--warm3); flex-shrink: 0;
+}
+.meal-item-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; font-weight: 500; color: var(--ink); flex: 1;
+}
+.meal-item-protein {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--green2); font-weight: 500;
+}
+.meal-item-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-left: 14px; margin-top: 2px;
+}
+.meal-daily-total {
+  background: var(--ink); padding: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 4px;
+}
+.mdt-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; color: rgba(250,247,242,.5);
+  text-transform: uppercase;
+}
+.mdt-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 900; color: var(--warm2);
+}
+.mdt-target {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: rgba(250,247,242,.4);
+}
+
+/* ── EGG GUIDE ────────────────────────────────── */
+.egg-wrap { padding: 18px; }
+.egg-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+}
+.egg-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 16px; line-height: 1.6;
+}
+.sauce-card {
+  background: white; border: 1px solid var(--border);
+  padding: 14px; margin-bottom: 8px;
+  box-shadow: 0 1px 3px var(--shadow);
+  display: flex; align-items: center; gap: 12px;
+}
+.sauce-icon { font-size: 28px; flex-shrink: 0; }
+.sauce-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--ink);
+}
+.sauce-availability {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--green2); margin-top: 2px; letter-spacing: .5px;
+}
+.sauce-detail {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; color: var(--muted2); margin-top: 4px; line-height: 1.5;
+}
+.egg-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.egg-style {
+  background: white; border: 1px solid var(--border);
+  padding: 12px; text-align: center;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+.egg-style-icon { font-size: 24px; margin-bottom: 5px; }
+.egg-style-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; font-weight: 600; color: var(--ink);
+}
+.egg-style-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); margin-top: 3px; line-height: 1.5;
+}
+
+/* ── WEEKLY OVERVIEW ──────────────────────────── */
+.week-wrap { padding: 18px; }
+.week-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+}
+.week-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); letter-spacing: 1px;
+  margin-bottom: 16px; line-height: 1.6;
+}
+.week-day-card {
+  background: white; border: 1px solid var(--border);
+  margin-bottom: 8px; overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.week-day-header {
+  display: flex; align-items: center;
+  padding: 10px 14px; gap: 10px;
+  background: var(--cream2); border-bottom: 1px solid var(--border);
+}
+.wdh-day {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700; color: var(--ink); flex: 1;
+}
+.wdh-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 2px 8px; text-transform: uppercase;
+}
+.wdh-badge.high { background: var(--green-bg); color: var(--green2); border: 1px solid var(--green-border); }
+.wdh-badge.med { background: var(--warm-bg); color: var(--warm); border: 1px solid rgba(196,154,40,.3); }
+.wdh-protein {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; color: var(--warm2);
+}
+.week-day-items { padding: 10px 14px; }
+.wdi {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 0; border-bottom: 1px solid var(--cream3);
+  font-family: 'Outfit', sans-serif; font-size: 11px; color: var(--ink2);
+}
+.wdi:last-child { border-bottom: none; }
+.wdi-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--warm3); flex-shrink: 0; }
+.wdi-p { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green2); }
+
+/* ── BUTTONS ──────────────────────────────────── */
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: var(--ink); color: var(--cream);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; border: none; cursor: pointer;
+  transition: all .15s; margin-top: 14px;
+}
+.btn-primary:hover { background: var(--ink2); }
+.btn-secondary {
+  width: 100%; padding: 10px;
+  background: none; border: 1px solid var(--border);
+  color: var(--muted2); font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; cursor: pointer;
+  margin-top: 6px; text-transform: uppercase; transition: all .15s;
+}
+.btn-secondary:hover { border-color: var(--warm2); color: var(--warm); }
+
+/* ── DIVIDER ──────────────────────────────────── */
+.div {
+  display: flex; align-items: center; gap: 8px;
+  margin: 16px 0 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 2px; color: var(--muted);
+  text-transform: uppercase;
+}
+.div::before, .div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.div.gold::before, .div.gold::after { background: linear-gradient(90deg, transparent, rgba(196,154,40,.4), transparent); }
+.div.gold { color: var(--warm); }
+
+/* ── DATE PICKER ──────────────────────────────── */
+.date-nav {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream2); border-bottom: 1px solid var(--border);
+  padding: 10px 18px; position: relative; z-index: 1;
+}
+.date-nav-btn {
+  width: 30px; height: 30px; border: 1px solid var(--border2);
+  background: white; cursor: pointer; color: var(--muted2);
+  font-size: 14px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s;
+}
+.date-nav-btn:hover { border-color: var(--warm2); color: var(--warm); }
+.date-nav-btn:disabled { opacity: .35; cursor: not-allowed; }
+.date-nav-center { flex: 1; text-align: center; }
+.date-nav-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--ink);
+  display: block;
+}
+.date-nav-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1.5px; color: var(--muted);
+  text-transform: uppercase; display: block; margin-top: 1px;
+}
+.date-nav-today {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 1px;
+  padding: 4px 10px; background: var(--ink); color: var(--cream);
+  border: none; cursor: pointer; text-transform: uppercase;
+  flex-shrink: 0; transition: background .15s;
+}
+.date-nav-today:hover { background: var(--warm); }
+.date-past-banner {
+  background: linear-gradient(90deg, var(--warm-bg), transparent);
+  border-bottom: 1px solid rgba(196,154,40,.2);
+  padding: 8px 18px; display: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 1px; color: var(--warm);
+  text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.date-past-banner.show { display: block; }
+
+/* ── SOURCE SEARCH / FILTER ───────────────────── */
+.src-filter-wrap {
+  background: var(--cream2); border-bottom: 1px solid var(--border);
+  padding: 10px 14px; display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap;
+}
+.src-search {
+  flex: 1; min-width: 120px; padding: 7px 10px;
+  background: white; border: 1px solid var(--border);
+  color: var(--ink); font-family: 'Outfit', sans-serif;
+  font-size: 11px; transition: border-color .15s;
+}
+.src-search::placeholder { color: var(--muted); }
+.src-search:focus { outline: none; border-color: var(--warm2); }
+.src-filter-btn {
+  padding: 5px 10px; font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px; text-transform: uppercase;
+  border: 1px solid var(--border2); background: white;
+  color: var(--muted2); cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.src-filter-btn.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.src-filter-btn:hover:not(.on) { border-color: var(--warm2); color: var(--warm); }
+.src-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted); letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* ── SOURCES EXPANDED ─────────────────────────── */
+.source-card .source-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--green2);
+  margin-top: 4px; letter-spacing: .5px;
+}
+.source-card .source-serving {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; color: var(--muted2);
+  margin-top: 2px;
+}
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--ink); color: var(--cream);
+  padding: 10px 20px;
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: .5px;
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  z-index: 9999; white-space: nowrap; max-width: 90vw; text-align: center;
+  box-shadow: 0 4px 16px var(--shadow2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* BACKUP */
+.backup-wrap {
+  border-top: 1px solid var(--border);
+  background: var(--cream2); padding: 12px 18px;
+  position: relative; z-index: 1;
+}
+.backup-tog {
+  width: 100%; background: none; border: none;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; padding: 0;
+}
+.backup-tog-l {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; color: var(--muted);
+  text-transform: uppercase;
+}
+.backup-panel { display: none; margin-top: 10px; gap: 7px; flex-direction: column; }
+.backup-panel.on { display: flex; }
+.backup-note { font-size: 9px; color: var(--muted); line-height: 1.7; font-family: 'DM Mono', monospace; }
+.backup-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+.backup-btn {
+  flex: 1; min-width: 90px; padding: 8px 10px;
+  background: white; border: 1px solid var(--border2);
+  color: var(--muted2); font-family: 'DM Mono', monospace;
+  font-size: 7px; letter-spacing: 1px; cursor: pointer;
+  text-transform: uppercase; transition: all .15s; text-align: center;
+}
+.backup-btn:hover { border-color: var(--warm2); color: var(--warm); }
+.backup-btn.d:hover { border-color: var(--red2); color: var(--red2); }
+.backup-ta {
+  width: 100%; background: white; border: 1px solid var(--border2);
+  color: var(--ink); font-family: 'DM Mono', monospace;
+  font-size: 8px; padding: 8px; resize: vertical; min-height: 60px;
+  display: none; line-height: 1.6;
+}
+.backup-ta.show { display: block; }
+.backup-rb {
+  padding: 10px; background: var(--ink); color: var(--cream);
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; border: none; cursor: pointer;
+  display: none; width: 100%;
+}
+.backup-rb.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Nutrition Protocol · Lagos · 95kg Athlete</div>
+  <div class="hero-title">FUEL<br><em>Protocol</em></div>
+  <div class="hero-sub">TARGET: 130–145g protein daily · No whey · Lagos accessible only<br>7 eggs · Tuna · Beans · Meat · Groundnuts</div>
+  <div class="hero-target">
+    <span class="hero-chip">95kg Body</span>
+    <span class="hero-chip">130–145g Target</span>
+    <span class="hero-chip">No Whey</span>
+    <span class="hero-chip">Lagos Market</span>
+  </div>
+</div>
+
+<!-- PROTEIN METER -->
+<div class="meter-section">
+  <div class="meter-label">Today's Protein Intake</div>
+  <div class="meter-top">
+    <div>
+      <span class="meter-current" id="meter-val">0</span>
+      <span class="meter-unit">g</span>
+    </div>
+    <div class="meter-target">Target<br><span id="meter-pct">0%</span> of <span>135g</span></div>
+  </div>
+  <div class="meter-bar">
+    <div class="meter-fill" id="meter-fill" style="width:0%"></div>
+  </div>
+  <div class="meter-zones">
+    <span class="meter-zone danger">0–70g Critical</span>
+    <span class="meter-zone ok">70–110g Building</span>
+    <span class="meter-zone good">110g+ Optimal</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-v" id="s1">0</div><div class="stat-l">Days Logged</div></div>
+  <div class="stat"><div class="stat-v" id="s2">0</div><div class="stat-l">Avg Protein</div></div>
+  <div class="stat"><div class="stat-v" id="s3">0</div><div class="stat-l">Days On Target</div></div>
+</div>
+
+<!-- DATE NAVIGATION -->
+<div class="date-nav" id="date-nav">
+  <button class="date-nav-btn" onclick="navDay(-1)">←</button>
+  <div class="date-nav-center">
+    <span class="date-nav-label" id="date-label">Today</span>
+    <span class="date-nav-sub" id="date-sub">Loading...</span>
+  </div>
+  <button class="date-nav-btn" onclick="navDay(1)" id="nav-fwd">→</button>
+  <button class="date-nav-today" onclick="goToday()">Today</button>
+</div>
+<div class="date-past-banner" id="past-banner">✦ Logging for a past day — data will be saved to that date</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tb on" onclick="sw(0)"><span class="tl">Daily Log</span><span class="ts">Track Today</span></button>
+  <button class="tb" onclick="sw(1)"><span class="tl">Meal Plan</span><span class="ts">Full Day</span></button>
+  <button class="tb" onclick="sw(2)"><span class="tl">Sources</span><span class="ts">Food Guide</span></button>
+  <button class="tb" onclick="sw(3)"><span class="tl">Egg Guide</span><span class="ts">Sauces + Styles</span></button>
+  <button class="tb" onclick="sw(4)"><span class="tl">Weekly</span><span class="ts">7-Day Plan</span></button>
+</div>
+
+<!-- ════ PANEL 0: DAILY LOG ════ -->
+<div class="panel on" id="p0">
+  <div class="logger-wrap">
+    <div class="logger-heading">Daily Protein Log</div>
+    <div class="logger-sub">TAP A FOOD TO LOG IT · TAP AGAIN TO REMOVE · ADJUST QUANTITY WITH + / −</div>
+
+    <div class="food-grid" id="food-grid"></div>
+
+    <div class="div gold">Custom Food</div>
+
+    <div class="custom-food-wrap">
+      <div class="cf-title">Add Any Other Food</div>
+      <div class="cf-row">
+        <input class="cf-inp" id="cf-name" placeholder="Food name (e.g. Moi Moi)" />
+        <input class="cf-inp small" id="cf-protein" placeholder="Protein g" type="number" min="0" max="200" />
+      </div>
+      <div class="cf-row">
+        <input class="cf-inp" id="cf-portion" placeholder="Portion (e.g. 1 wrap, 200g)" />
+        <button class="cf-add" onclick="addCustom()">+ Add</button>
+      </div>
+    </div>
+
+    <div class="log-section">
+      <div class="log-title">Today's Log</div>
+      <div id="log-list"></div>
+      <div id="log-empty" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding:20px 0;display:none">Nothing logged yet. Start tapping above.</div>
+    </div>
+
+    <button class="btn-primary" onclick="sealNutrition()">SEAL TODAY'S NUTRITION</button>
+    <button class="btn-secondary" onclick="resetNutrition()">Reset Today</button>
+  </div>
+</div>
+
+<!-- ════ PANEL 1: MEAL PLAN ════ -->
+<div class="panel" id="p1">
+  <div class="meal-wrap">
+    <div class="meal-heading">Full Day Meal Plan</div>
+    <div class="meal-sub">OPTIMISED FOR 130–145G PROTEIN · LAGOS ACCESSIBLE · NO WHEY</div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-time-icon">🌅</span>
+        <div><div class="meal-time-label">Morning</div><div class="meal-time-sub">6:00 – 8:00 AM · Before or after training</div></div>
+        <div class="meal-protein-badge">42<span>g</span></div>
+      </div>
+      <div class="meal-items">
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">7 Whole Eggs — scrambled with Knorr/pepper sauce</div><div class="meal-item-protein">42g</div></div>
+        <div class="meal-item-note">Cook in batches of 3–4. Use Knorr Liquid Seasoning or local pepper sauce. Full protein hit first thing.</div>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-time-icon">☀️</span>
+        <div><div class="meal-time-label">Midday</div><div class="meal-time-sub">12:00 – 1:00 PM · Largest meal</div></div>
+        <div class="meal-protein-badge">45<span>g</span></div>
+      </div>
+      <div class="meal-items">
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">Daily meat portion (beef/goat)</div><div class="meal-item-protein">30g</div></div>
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">1 cup beans (black-eyed or brown)</div><div class="meal-item-protein">15g</div></div>
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">Rice or yam (carb base)</div><div class="meal-item-protein">~5g</div></div>
+        <div class="meal-item-note">This is your biggest meal. Eat enough — muscle building requires calorie surplus.</div>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-time-icon">🌤️</span>
+        <div><div class="meal-time-label">Afternoon Snack</div><div class="meal-time-sub">3:00 – 4:00 PM · Between meals</div></div>
+        <div class="meal-protein-badge">25<span>g</span></div>
+      </div>
+      <div class="meal-items">
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">1 tin canned tuna (Lucky Star / Titus)</div><div class="meal-item-protein">25g</div></div>
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">5 sachets groundnuts</div><div class="meal-item-protein">15g</div></div>
+        <div class="meal-item-note">Tuna straight from tin. Groundnuts for calories and healthy fats. Fast, cheap, effective.</div>
+      </div>
+    </div>
+
+    <div class="meal-card">
+      <div class="meal-header">
+        <span class="meal-time-icon">🌙</span>
+        <div><div class="meal-time-label">Evening</div><div class="meal-time-sub">7:00 – 8:00 PM · Post-training or dinner</div></div>
+        <div class="meal-protein-badge">18<span>g</span></div>
+      </div>
+      <div class="meal-items">
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">Chicken drumstick (on chicken days)</div><div class="meal-item-protein">18g</div></div>
+        <div class="meal-item"><div class="meal-item-dot"></div><div class="meal-item-name">Fish / mackerel (on non-chicken days)</div><div class="meal-item-protein">25g</div></div>
+        <div class="meal-item-note">Rotate between chicken and fish. Fish is cheaper and has excellent protein per naira.</div>
+      </div>
+    </div>
+
+    <div class="meal-daily-total">
+      <div><div class="mdt-label">Daily Total</div><div class="mdt-target">Target: 130–145g</div></div>
+      <div class="mdt-val">~135g</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PANEL 2: FOOD SOURCES ════ -->
+<div class="panel" id="p2">
+  <div class="src-filter-wrap">
+    <input class="src-search" id="src-search" placeholder="Search sources..." oninput="filterSources()" />
+    <button class="src-filter-btn on" onclick="setSrcFilter('all',this)">All</button>
+    <button class="src-filter-btn" onclick="setSrcFilter('tier1',this)">Tier 1</button>
+    <button class="src-filter-btn" onclick="setSrcFilter('tier2',this)">Tier 2</button>
+    <button class="src-filter-btn" onclick="setSrcFilter('tier3',this)">Tier 3</button>
+    <span class="src-count" id="src-count">42 sources</span>
+  </div>
+  <div class="guide-wrap" id="sources-container">
+    <div class="guide-heading">Protein Sources</div>
+    <div class="guide-sub">42 SOURCES · RANKED BY PROTEIN PER NAIRA · LAGOS ACCESSIBLE · SERVING SIZES INCLUDED</div>
+    <!-- rendered by JS -->
+  </div>
+</div>
+
+<!-- ════ PANEL 3: EGG GUIDE ════ -->
+<div class="panel" id="p3">
+  <div class="egg-wrap">
+    <div class="egg-heading">The Egg Guide</div>
+    <div class="egg-sub">7 EGGS DAILY · SAUCES TO MAKE THEM WORK · STYLES TO KEEP IT INTERESTING</div>
+
+    <div class="div gold">Lagos-Available Sauces</div>
+
+    <div class="sauce-card">
+      <div class="sauce-icon">🫙</div>
+      <div>
+        <div class="sauce-name">Knorr Liquid Seasoning</div>
+        <div class="sauce-availability">✓ Available — most supermarkets, local stores, markets</div>
+        <div class="sauce-detail">Your most accessible option. A few drops while cooking completely transforms the eggy taste. Umami-rich. Works with scrambled, fried, boiled. Buy one bottle and keep it by the stove.</div>
+      </div>
+    </div>
+
+    <div class="sauce-card">
+      <div class="sauce-icon">🌶️</div>
+      <div>
+        <div class="sauce-name">Local Pepper Sauce / Shito</div>
+        <div class="sauce-availability">✓ Available — everywhere in Lagos, markets, roadside</div>
+        <div class="sauce-detail">The most Nigerian solution. Bottled pepper sauce or shito works perfectly with eggs. You already know the flavour profile. Cuts the egg taste entirely. Cheap. Everywhere.</div>
+      </div>
+    </div>
+
+    <div class="sauce-card">
+      <div class="sauce-icon">🔴</div>
+      <div>
+        <div class="sauce-name">Sriracha</div>
+        <div class="sauce-availability">✓ Available — Shoprite, Spar, Market Square Lagos</div>
+        <div class="sauce-detail">Hot, tangy, completely transforms eggs. Particularly good with scrambled eggs. The bottle lasts months. Worth buying once from any major supermarket.</div>
+      </div>
+    </div>
+
+    <div class="sauce-card">
+      <div class="sauce-icon">🍶</div>
+      <div>
+        <div class="sauce-name">Kikkoman Soy Sauce</div>
+        <div class="sauce-availability">✓ Available — Shoprite, Spar, health food stores</div>
+        <div class="sauce-detail">A few drops on eggs cuts the taste completely. Umami depth. Works especially well with fried eggs. Asian grocery stores in Lagos also stock it.</div>
+      </div>
+    </div>
+
+    <div class="sauce-card">
+      <div class="sauce-icon">🍅</div>
+      <div>
+        <div class="sauce-name">Heinz Chilli Sauce</div>
+        <div class="sauce-availability">✓ Available — most supermarkets</div>
+        <div class="sauce-detail">Milder than Sriracha. Good for those who want flavour without too much heat. Classic sauce that pairs well with eggs in any style.</div>
+      </div>
+    </div>
+
+    <div class="div gold">Cooking Styles — Keep It Varied</div>
+
+    <div class="egg-style-grid">
+      <div class="egg-style">
+        <div class="egg-style-icon">🍳</div>
+        <div class="egg-style-name">Scrambled</div>
+        <div class="egg-style-note">4 eggs + Knorr drops while cooking. Fast. Works with any sauce.</div>
+      </div>
+      <div class="egg-style">
+        <div class="egg-style-icon">⚪</div>
+        <div class="egg-style-name">Boiled</div>
+        <div class="egg-style-note">Batch boil 3–4. Eat cold with pepper sauce. No cooking during the day.</div>
+      </div>
+      <div class="egg-style">
+        <div class="egg-style-icon">🟡</div>
+        <div class="egg-style-name">Fried</div>
+        <div class="egg-style-note">2 eggs fried in minimal oil. Add soy sauce or pepper sauce at the end.</div>
+      </div>
+      <div class="egg-style">
+        <div class="egg-style-icon">🥘</div>
+        <div class="egg-style-name">Omelette</div>
+        <div class="egg-style-note">3 eggs with tomato, onion, pepper. Filling. Masks the egg taste best.</div>
+      </div>
+    </div>
+
+    <div class="div">The 7-Egg Daily Schedule</div>
+
+    <div style="background:white;border:1px solid var(--border);padding:14px;box-shadow:0 1px 3px var(--shadow);">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--cream3)">
+          <div style="font-size:16px">🌅</div>
+          <div style="flex:1"><div style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--ink)">Morning — 4 eggs</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px">Scrambled with Knorr · Your biggest egg hit</div></div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--green2)">24g</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--cream3)">
+          <div style="font-size:16px">☀️</div>
+          <div style="flex:1"><div style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--ink)">Afternoon — 2 eggs</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px">Boiled from morning prep · Easy snack</div></div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--green2)">12g</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:16px">🌙</div>
+          <div style="flex:1"><div style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--ink)">Evening — 1 egg</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px">Fried with dinner · Protein top-up</div></div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--green2)">6g</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PANEL 4: WEEKLY PLAN ════ -->
+<div class="panel" id="p4">
+  <div class="week-wrap">
+    <div class="week-heading">7-Day Protein Plan</div>
+    <div class="week-sub">ROTATES MEAT AND CHICKEN · AVERAGES 130–135G DAILY</div>
+
+    <div id="weekly-plan"></div>
+
+    <div style="background:var(--ink);padding:14px;margin-top:4px">
+      <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:rgba(250,247,242,.4);text-transform:uppercase;margin-bottom:5px">Weekly Average</div>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--warm2)">~133g</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(250,247,242,.4)">protein per day</span>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(250,247,242,.35);margin-top:4px;line-height:1.6">When whey becomes available — add 2 scoops daily and this jumps to ~185g. Elite territory.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP -->
+<div class="backup-wrap">
+  <button class="backup-tog" onclick="togBK()">
+    <span class="backup-tog-l">⚙ Data Backup & Restore</span>
+    <span style="font-size:10px;color:var(--muted)" id="bki">▼</span>
+  </button>
+  <div class="backup-panel" id="bkp">
+    <div class="backup-note">Export before clearing your browser or switching devices.</div>
+    <div class="backup-btns">
+      <button class="backup-btn" onclick="expD()">⬆ Export</button>
+      <button class="backup-btn" onclick="showImp()">⬇ Import</button>
+      <button class="backup-btn d" onclick="clrD()">✕ Clear</button>
+    </div>
+    <textarea class="backup-ta" id="bkexp"></textarea>
+    <textarea class="backup-ta" id="bkimp" placeholder="Paste backup code here..."></textarea>
+    <button class="backup-rb" id="bkrb" onclick="impD()">Restore Data</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── FOOD DATABASE ──────────────────────────────
+const FOODS = [
+  { id:'eggs', name:'Whole Eggs', icon:'🥚', protein:6, portionLabel:'per egg', cls:'egg', defaultQty:7, unit:'eggs' },
+  { id:'tuna', name:'Canned Tuna', icon:'🐟', protein:25, portionLabel:'per tin', cls:'tuna', defaultQty:1, unit:'tins' },
+  { id:'meat', name:'Beef / Goat Meat', icon:'🍖', protein:30, portionLabel:'per serving (~150g)', cls:'meat', defaultQty:1, unit:'servings' },
+  { id:'chicken', name:'Chicken Drumstick', icon:'🍗', protein:18, portionLabel:'per drumstick', cls:'chicken', defaultQty:1, unit:'pieces' },
+  { id:'beans', name:'Beans', icon:'🫘', protein:15, portionLabel:'per cup cooked', cls:'beans', defaultQty:1, unit:'cups' },
+  { id:'groundnuts', name:'Groundnuts', icon:'🥜', protein:3, portionLabel:'per sachet', cls:'groundnut', defaultQty:5, unit:'sachets' },
+  { id:'fish', name:'Mackerel / Catfish', icon:'🐠', protein:25, portionLabel:'per serving', cls:'fish', defaultQty:1, unit:'servings' },
+  { id:'rice', name:'Rice / Yam / Bread', icon:'🍚', protein:5, portionLabel:'per serving', cls:'custom', defaultQty:1, unit:'servings' },
+];
+
+// ── PROTEIN SOURCES DATABASE (42 sources) ──────
+const SOURCES = [
+  // TIER 1 — Primary
+  { tier:'tier1', icon:'🥚', name:'Whole Eggs', protein:6, serving:'1 egg (~50g)', freq:'Daily', price:'Budget',
+    detail:'Your cornerstone source. 7 per day = 42g complete protein. Full amino acid profile including all essential amino acids. Yolk fat directly supports testosterone synthesis via cholesterol pathway. Bioavailability ~91%. Sold at roadside stalls, Dominos market, every open market.',
+    tags:['Complete protein','Testosterone support','91% bioavailable','₦100–150/egg'] },
+
+  { tier:'tier1', icon:'🐟', name:'Canned Tuna (Lucky Star / Titus / Angelica)', protein:25, serving:'1 tin (185g)', freq:'Daily', price:'Budget',
+    detail:'Biggest protein-per-naira unlock available in Lagos. 25g complete protein, zero cooking required. Eat straight from the tin. Omega-3 EPA/DHA content supports muscle protein synthesis signalling and reduces post-training inflammation. Available in every market stall, Shoprite, Spar, roadside kiosk.',
+    tags:['25g per tin','No cooking','Omega-3','₦600–900/tin'] },
+
+  { tier:'tier1', icon:'🍖', name:'Beef (Lean cut / Stew)', protein:26, serving:'150g serving', freq:'Daily', price:'Moderate',
+    detail:'Complete protein with natural creatine content (~0.9g per 150g). Creatine in red meat directly enhances ATP regeneration and training performance without supplementation. Zinc and iron density supports testosterone and haemoglobin. Buy from abattoir-fresh market stalls — Agege, Oyingbo, Mile 12 markets.',
+    tags:['Natural creatine','Zinc-rich','Complete protein','₦1,500–2,500/serving'] },
+
+  { tier:'tier1', icon:'🐐', name:'Goat Meat (Asun / Stew)', protein:27, serving:'150g serving', freq:'Daily', price:'Moderate',
+    detail:'Leaner than beef, almost identical protein density. Slightly higher iron content than beef. A staple in Lagos markets — sold by the kg. Asun (spicy smoked goat) is a ready-to-eat high-protein option available at beer parlours, restaurants, and parties. Very high satiety.',
+    tags:['Leaner than beef','High iron','Market staple','₦1,500–2,800/serving'] },
+
+  { tier:'tier1', icon:'🐟', name:'Mackerel / Titus Fish (Fresh / Frozen)', protein:25, serving:'1 medium fish (~200g)', freq:'3–4×/week', price:'Budget',
+    detail:'One of the best protein-per-naira options in Lagos. Frozen Titus fish is widely available and extremely affordable. Omega-3 content rivals salmon. Can be fried, grilled, or added to pepper soup. Bone-in weight reduces actual protein serving — fillet only is closer to 20g.',
+    tags:['Omega-3','Best ₦ per g','Frozen available','₦500–800/fish'] },
+
+  { tier:'tier1', icon:'🐠', name:'Catfish (Point & Kill / Smoked)', protein:20, serving:'1 medium (200g)', freq:'Weekly', price:'Moderate',
+    detail:'Available live at markets (Lekki, Badore, Mile 12) or smoked. Point-and-kill catfish is a premium option. Smoked catfish is dried and more protein-dense by weight but requires soaking. Excellent in pepper soup — a high-protein meal. Omega-3 and complete amino acid profile.',
+    tags:['Live or smoked','Pepper soup protein','Omega-3','₦1,000–2,000/fish'] },
+
+  { tier:'tier1', icon:'🍗', name:'Chicken Breast (Whole bird / Supermarket)', protein:31, serving:'1 breast (~165g)', freq:'Daily possible', price:'Moderate',
+    detail:'Highest protein density of all poultry. Chicken breast from supermarket (Shoprite, Spar, Market Square) or whole birds from market. Significantly higher protein than drumstick. If only accessing drumsticks currently, switching one meal to breast roughly adds 13g per serving.',
+    tags:['31g per breast','Highest poultry protein','Lean','₦1,500–2,500/breast'] },
+
+  { tier:'tier1', icon:'🍗', name:'Chicken Drumstick', protein:18, serving:'1 drumstick (~120g)', freq:'Daily', price:'Budget',
+    detail:'Your current rotation piece. Lower protein than breast but more affordable and widely available pre-cooked at bukkas, canteens, and fast food. Available frozen (UAC, Nate, Chicken Republic). Skin-off drops fat significantly. Two drumsticks = 36g protein.',
+    tags:['18g per piece','Bukka available','Frozen stock','₦400–800/piece'] },
+
+  // TIER 2 — Supporting
+  { tier:'tier2', icon:'🫘', name:'Black-eyed Beans (Ewa Agoyin style)', protein:15, serving:'1 cup cooked (~170g)', freq:'Daily', price:'Budget',
+    detail:'Classic Lagos staple. Extremely cheap. Pairs with eggs synergistically — eggs supply the methionine that limits beans\' amino acid profile. Slow-release carbs prevent blood sugar spikes. Ewa agoyin (soft mashed beans with pepper sauce) is a ready meal from roadside sellers. High fibre supports gut health.',
+    tags:['15g per cup','Amino synergy with eggs','Cheap','₦200–400/serving'] },
+
+  { tier:'tier2', icon:'🫘', name:'Brown/Red Cowpeas (Oloyin / Honey beans)', protein:14, serving:'1 cup cooked', freq:'Daily', price:'Budget',
+    detail:'Sweeter variety of Nigerian beans. Same protein and fibre profile as black-eyed peas. Often preferred for moi moi and akara preparation. Available in every market. Higher lysine content than most grains, making it valuable when consumed without eggs.',
+    tags:['14g per cup','Moi moi base','Lysine-rich','₦250–450/serving'] },
+
+  { tier:'tier2', icon:'🥜', name:'Groundnut / Peanut Butter (local grind)', protein:8, serving:'2 tbsp (32g)', freq:'Daily', price:'Budget',
+    detail:'Groundnut paste (fresh-ground at market stalls) is significantly cheaper and more protein-dense than packaged options. 8g protein per 2 tbsp plus high healthy fat content for calorie surplus. Spread on bread, mix into oats, or eat directly. Available at every market — ask for "peanut butter" or "groundnut paste".',
+    tags:['8g per 2tbsp','Calorie dense','Market fresh','₦200–400/100g'] },
+
+  { tier:'tier2', icon:'🥜', name:'Roasted Groundnuts (Sachet / Bag)', protein:3, serving:'1 small sachet (~25g)', freq:'Daily snack', price:'Budget',
+    detail:'5 sachets daily = 15g protein plus essential fats. Not primarily a protein source — its role is calorie support and healthy fats (monounsaturated, testosterone-supporting). Buy in bulk bags from market for significant cost savings vs. individual sachets. Palmitic and oleic acid profile.',
+    tags:['Calorie support','Healthy fats','₦50–100/sachet','Bulk savings available'] },
+
+  { tier:'tier2', icon:'🐟', name:'Canned Sardines (Gino / Tasty Tom brands)', protein:18, serving:'1 tin (125g)', freq:'3×/week', price:'Budget',
+    detail:'Cheaper alternative to tuna. Softer bones are edible and add significant calcium — unusual for a protein source. Omega-3 content is excellent. Widely available. Pairs with bread, rice, or eaten directly. Often on promotion at Shoprite and local stores.',
+    tags:['18g per tin','Edible bones','Omega-3','₦400–600/tin'] },
+
+  { tier:'tier2', icon:'🐟', name:'Canned Mackerel in Tomato Sauce', protein:20, serving:'1 tin (155g)', freq:'3×/week', price:'Budget',
+    detail:'Higher protein than sardine tins, tomato sauce base reduces need for additional flavouring. Several local Nigerian brands available. Ready-to-eat protein hit. The tomato sauce base provides lycopene — an antioxidant that supports recovery.',
+    tags:['20g per tin','Ready to eat','Lycopene bonus','₦500–700/tin'] },
+
+  { tier:'tier2', icon:'🦐', name:'Dried / Smoked Prawns (Crayfish)', protein:12, serving:'3 tbsp dry (~30g)', freq:'As condiment', price:'Budget',
+    detail:'Often overlooked as a protein source because it\'s used as seasoning. But 3 tablespoons of dried crayfish delivers ~12g protein. Every bowl of soup, stew, or beans you make with crayfish is a protein contribution. Available at all markets in Ziploc portions. Iodine content supports thyroid function.',
+    tags:['12g per 30g dry','Used as seasoning','Iodine-rich','₦400–800/portion'] },
+
+  { tier:'tier2', icon:'🥩', name:'Pork (Suya / Roast)', protein:25, serving:'150g', freq:'Weekly', price:'Moderate',
+    detail:'Higher protein density than goat. Pork suya and roasted pork are available in non-Muslim areas of Lagos — particularly Surulere, Victoria Island, Lekki Phase 1, and Festac. Rich in B vitamins especially B12 and thiamine. Lean pork loin is comparable to chicken breast in fat content.',
+    tags:['25g per serving','B-vitamin rich','Area-specific','₦1,500–3,000/serving'] },
+
+  { tier:'tier2', icon:'🫘', name:'Lentils (Red / Green — imported)', protein:18, serving:'1 cup cooked (~200g)', freq:'Weekly', price:'Moderate',
+    detail:'Higher protein than most Nigerian beans. Available at ShopRite, Spar, and health food stores like Hubmart. Cooks faster than cowpeas — 20 mins no pre-soak. Very high in folate and iron. Red lentils melt into soups; green hold shape better for salads or sides.',
+    tags:['18g per cup','Fast cooking','Iron-rich','₦800–1,200/500g pack'] },
+
+  { tier:'tier2', icon:'🥛', name:'Peak Milk Full Cream (liquid form)', protein:8, serving:'240ml / 1 glass', freq:'Daily', price:'Budget',
+    detail:'The most available dairy protein in Lagos. Full cream Peak milk contains whey and casein — the same proteins in expensive supplements, naturally. 8g per glass. Casein digests slowly, providing sustained amino acid release. Use in oats, drink with meals, or blend with banana for a high-calorie protein shake without supplements.',
+    tags:['8g per glass','Whey + casein','Available everywhere','₦300–500/tin'] },
+
+  { tier:'tier2', icon:'🥛', name:'Peak Milk Evaporated (tinned)', protein:9, serving:'½ tin (200ml)', freq:'Daily', price:'Budget',
+    detail:'More concentrated than liquid milk. 9g protein per ½ tin. Mix with water to desired consistency. Higher calorie density than fresh milk. Add to oats, porridge, or drink directly. Every mama put and corner store in Lagos stocks Peak tinned milk.',
+    tags:['9g per ½ tin','More concentrated','Every corner store','₦400–600/tin'] },
+
+  { tier:'tier2', icon:'🫘', name:'Soya Beans / Soy Milk (homemade)', protein:9, serving:'240ml', freq:'Daily', price:'Budget',
+    detail:'Raw soybeans are available at Lagos markets. Ground and boiled, they produce soy milk with 9g protein per cup. You can also buy soy flour from health stores and add to soups or oats. Among the few plant proteins with a complete amino acid profile comparable to animal sources. Also available as fried soy snacks (roasted soybeans) at markets.',
+    tags:['Complete plant protein','Make-at-home option','₦200/cup homemade','Soy flour at health stores'] },
+
+  { tier:'tier2', icon:'🐟', name:'Stockfish (Panla)', protein:20, serving:'50g dry piece', freq:'Weekly', price:'Moderate',
+    detail:'A protein-dense Nigerian staple often underestimated. Dried stockfish is extremely high-protein by weight because all water is removed. 50g dry = ~20g protein. Used in soups — egusi, ofe onugbu, ora soup. Rehydrates and significantly expands. Widely available at Balogun market, Mile 12, and online.',
+    tags:['Protein dense by weight','Soup staple','20g per 50g dry','₦800–2,000/piece'] },
+
+  { tier:'tier2', icon:'🥩', name:'Liver (Beef / Chicken)', protein:26, serving:'100g', freq:'2×/week', price:'Budget',
+    detail:'One of the most nutrient-dense foods that exists — not just for protein but for vitamin A, B12, iron, copper, and CoQ10. 26g protein per 100g. Beef liver is available cheaply at abattoirs and most open markets. Chicken livers are extremely cheap (often sold in bulk packs). Boil or fry — 5–7 minutes is sufficient. Limit to 2x per week due to high vitamin A.',
+    tags:['26g per 100g','Micronutrient dense','B12 powerhouse','₦300–700/100g'] },
+
+  { tier:'tier2', icon:'🐟', name:'Tilapia (Grilled / Fried)', protein:21, serving:'1 medium fish (~150g fillet)', freq:'Weekly', price:'Moderate',
+    detail:'Clean white-flesh fish. Tilapia farms in Lagos and Ogun State supply markets. Very low fat, high lean protein. Available fresh at supermarkets and markets. Mild taste accepts any seasoning well. Pepper soup tilapia is available at restaurants. Sold whole, scaled and gutted.',
+    tags:['21g per fillet','Very low fat','Farm fresh','₦800–1,500/fish'] },
+
+  { tier:'tier2', icon:'🥩', name:'Tripe / Shaki (Cow stomach)', protein:17, serving:'150g', freq:'Weekly', price:'Budget',
+    detail:'Nigerian staple in pepper soup and ofe akwu. High protein, very low fat. Available at abattoirs and markets pre-cleaned. Requires long boiling (30–45 mins) until tender. Collagen-rich in addition to protein — supports connective tissue, joints, and skin. Frequently eaten with suya or in assorted stew.',
+    tags:['17g per serving','Collagen-rich','Abattoir cheap','₦400–700/portion'] },
+
+  { tier:'tier2', icon:'🫘', name:'Moi Moi (bean pudding)', protein:12, serving:'1 large wrap (~200g)', freq:'Daily', price:'Budget',
+    detail:'Ready-to-eat bean protein available from roadside sellers, markets, and canteens across Lagos. Each large wrap delivers ~12g protein with almost no effort required. Soft texture, highly bioavailable. Add fish or egg to the moi moi recipe and protein jumps. Sold hot from Mama Put stalls morning through afternoon.',
+    tags:['12g per wrap','Ready to eat','Roadside available','₦200–500/wrap'] },
+
+  { tier:'tier2', icon:'🍳', name:'Akara (Bean Fritters)', protein:8, serving:'4 balls (~100g)', freq:'Breakfast option', price:'Budget',
+    detail:'Fried bean cakes — a classic Lagos breakfast protein. 4 balls from a standard street seller = ~8g protein. Available from 6 AM at bus stops, markets, and roadside stalls. Combine with pap (ogi) or eat alone. Quick source of plant protein when you\'re in a hurry. Sold everywhere by weight.',
+    tags:['8g per 4 balls','Street breakfast','Bean protein','₦200–400 for 4'] },
+
+  // TIER 3 — Supplementary
+  { tier:'tier3', icon:'🥚', name:'Quail Eggs', protein:2.5, serving:'1 egg (~9g)', freq:'As snack', price:'Budget',
+    detail:'Available at exotic bird farms and some markets in Lagos (especially Alaba and Ikeja areas). 6 quail eggs ≈ 15g protein. Marketed as a health food — vendors often sell at traffic lights and market stalls. Same nutritional profile as chicken eggs, gram for gram. Good variety option.',
+    tags:['2.5g per egg','Novelty variety','Traffic-light vendors','₦50–100/egg'] },
+
+  { tier:'tier3', icon:'🌰', name:'Cashew Nuts', protein:5, serving:'30g (small handful)', freq:'Snack', price:'Moderate',
+    detail:'Nigeria is one of the world\'s top cashew producers — raw cashews are occasionally available cheaper than imported. 5g protein per 30g handful plus magnesium (supports muscle contraction and testosterone). Available at supermarkets, health stores, and market nut sellers. Good fat profile similar to olive oil (oleic acid dominant).',
+    tags:['5g per handful','Magnesium-rich','Nigerian grown','₦500–800/100g'] },
+
+  { tier:'tier3', icon:'🥣', name:'Oats (Quaker / any rolled oat)', protein:5, serving:'½ cup dry (~40g)', freq:'Daily breakfast', price:'Budget',
+    detail:'Solid protein contribution when combined with milk — oats + 1 glass Peak milk = 13g protein breakfast without eggs. Beta-glucan fibre supports cholesterol health. Available at Shoprite, Spar, and large markets. Cook with water or milk and add groundnut butter to significantly boost calories and protein. Cheap, filling, easy.',
+    tags:['5g per serving','Combine with milk for 13g','Beta-glucan fibre','₦800–1,200/1kg'] },
+
+  { tier:'tier3', icon:'🌱', name:'Soya Beans Snack (Roasted)', protein:11, serving:'30g packet', freq:'Snack', price:'Budget',
+    detail:'Roasted soybeans are sold in small packets at Lagos markets and by hawkers. Often labelled "soya snack" or "roasted soya". 11g protein per 30g — among the highest plant-protein snacks available. Crunchy, shelf-stable, no prep required. Complete protein unlike most plant sources.',
+    tags:['11g per 30g','Complete plant protein','Hawker-sold','₦100–200/packet'] },
+
+  { tier:'tier3', icon:'🐔', name:'Chicken Gizzards', protein:18, serving:'100g (~4 gizzards)', freq:'Weekly', price:'Budget',
+    detail:'Extremely cheap cut, often sold at butchers and chicken sellers by weight. Very lean, high protein, low fat. Requires boiling for 20–30 minutes before frying. Available at Shoprite in frozen pre-cleaned packs or fresh from market poultry sellers. High zinc content.',
+    tags:['18g per 100g','Very cheap','High zinc','₦400–700/100g'] },
+
+  { tier:'tier3', icon:'🍳', name:'Egg White Only', protein:11, serving:'3 large whites (~99g)', freq:'Add-on', price:'Budget',
+    detail:'If you can separate eggs at scale, egg whites provide pure protein with almost zero fat. Useful as a protein top-up when you\'ve hit your daily yolk limit but need more protein. 3 whites ≈ 11g protein. Best scrambled or as an omelette base. Bioavailability is lower raw — always cook egg whites.',
+    tags:['11g per 3 whites','Pure protein','Cook don\'t eat raw','From cheap whole eggs'] },
+
+  { tier:'tier3', icon:'🥩', name:'Kidney / Heart (offal)', protein:20, serving:'100g', freq:'1–2×/week', price:'Budget',
+    detail:'Kidney and heart are extremely nutrient-dense and cheap at abattoirs. Heart is particularly high in CoQ10 — a compound that enhances mitochondrial energy production and cardiovascular output. 20g protein per 100g. Strong flavour — cook with a lot of onion and seasoning. Available at open-air markets very cheaply.',
+    tags:['20g per 100g','CoQ10 in heart','Abattoir cheap','₦300–600/100g'] },
+
+  { tier:'tier3', icon:'🦐', name:'Fresh Prawns / Shrimp', protein:18, serving:'100g shelled', freq:'Occasional', price:'Moderate',
+    detail:'Available at fish stalls at Lekki, Bar Beach, and markets near the coast. Very lean, low calorie, high protein. Excellent in stir-fry with vegetables or as part of seafood pepper soup. Freeze fresh prawns immediately for longer storage. Slightly higher in sodium than other seafood.',
+    tags:['18g per 100g','Very lean','Coastal markets','₦1,000–2,500/100g'] },
+
+  { tier:'tier3', icon:'🌾', name:'Pap + Milk Combo (Ogi + Peak milk)', protein:9, serving:'1 bowl with milk', freq:'Breakfast option', price:'Budget',
+    detail:'Traditional Nigerian breakfast that becomes a solid protein meal when paired with Peak milk. Corn pap alone is low protein, but 1 glass of Peak milk added = 9g total. Add akara or egg alongside and you have a proper protein breakfast. Widely available ready-made from street sellers in the morning.',
+    tags:['9g with milk','Classic Nigerian breakfast','Street-seller available','Very affordable'] },
+
+  { tier:'tier3', icon:'🥜', name:'Peanut Butter (Fan / Sundial brand)', protein:7, serving:'2 tbsp (32g)', freq:'Daily add-on', price:'Budget',
+    detail:'Packaged peanut butter from brands like Fan or Sundial is available at most supermarkets. 7g protein per 2 tbsp. Mix into oats, spread on bread, or eat directly with banana. Choose variants without added sugar where possible. Easy way to add protein and calories to any meal without cooking.',
+    tags:['7g per 2tbsp','No cooking','Supermarket available','₦600–1,000/jar'] },
+
+  { tier:'tier3', icon:'🐟', name:'Smoked Herring (Bonga Fish)', protein:19, serving:'1 medium fish (~80g)', freq:'Weekly', price:'Budget',
+    detail:'Bonga fish is a smoked, heavily salted Nigerian staple used in soups and stews. Strong flavour makes it a natural seasoning base that also delivers protein. Available at every Lagos market. Rinse before use to reduce excessive sodium. Can be added to beans, egusi, or eaten as a side. Very affordable.',
+    tags:['19g per fish','Soup base protein','Market staple','₦200–500/fish'] },
+
+  { tier:'tier3', icon:'🥛', name:'Wara / Wara Cheese (local tofu)', protein:7, serving:'100g', freq:'As available', price:'Budget',
+    detail:'Traditional West African soft cheese made from soy or cow milk depending on region. Available in Lagos at markets, especially from northern traders. Sometimes fried and sold in small portions. 7g protein per 100g. Mild flavour, good texture. High calcium content. A hidden gem in Lagos protein options.',
+    tags:['7g per 100g','Northern market traders','High calcium','₦300–600/100g'] },
+
+  { tier:'tier3', icon:'🫘', name:'Egusi (Melon seed — in soup)', protein:9, serving:'3 tbsp (~30g)', freq:'As cooking ingredient', price:'Budget',
+    detail:'Egusi is a seed, not strictly a vegetable, with a solid protein content. 3 tablespoons of ground egusi used in egusi soup = ~9g protein. Also contains zinc, magnesium, and healthy fats. Every pot of egusi soup you eat is a protein contribution beyond just the meat. Available in ground form at all markets.',
+    tags:['9g per 3tbsp','Zinc and magnesium','Every market','₦500–800/cup ground'] },
+
+  { tier:'tier3', icon:'🌰', name:'Walnut / Tiger Nut (Ofio)', protein:4, serving:'30g', freq:'Occasional', price:'Budget',
+    detail:'Tiger nuts (ofio) are sold by hawkers and at markets — cheap, filling, and with modest protein. True walnuts are available at high-end supermarkets. Tiger nuts are high in resistant starch which feeds gut bacteria and supports insulin sensitivity. Easy grab-and-go snack alongside higher-protein meals.',
+    tags:['4g per 30g','Gut health support','Hawker-sold','₦100–200/handful'] },
+
+  { tier:'tier3', icon:'🍌', name:'Moringa Powder (Ewe Ile)', protein:9, serving:'3 tbsp (~30g)', freq:'Add-on supplement', price:'Moderate',
+    detail:'Moringa powder is increasingly available at health stores and online in Lagos (Jumia, Konga). 9g protein per 30g is high for a plant powder. More importantly, moringa contains all 9 essential amino acids and is loaded with iron, calcium, and vitamins A and C. Add to soups, smoothies, or oats. Does not affect flavour significantly.',
+    tags:['9g per 30g','All 9 essential AAs','Health stores + Jumia','₦1,000–2,000/pack'] },
+
+  { tier:'tier3', icon:'🥚', name:'Snail Meat (Igbin)', protein:15, serving:'100g cooked', freq:'Occasional', price:'Moderate',
+    detail:'Nigerian giant African land snail (Achatina achatina). High protein, very low fat, rich in iron and calcium. Available at Lagos markets and specialist bush meat sellers. Sold live, pre-cleaned, or in frozen packs. Cooked in peppered stew or pepper soup. A premium local delicacy with excellent nutritional profile.',
+    tags:['15g per 100g','Low fat','Iron and calcium','₦1,000–2,500/portion'] },
+
+  { tier:'tier3', icon:'🐟', name:'Periwinkle (Isawuru)', protein:11, serving:'100g shelled', freq:'Occasional', price:'Budget',
+    detail:'Small shellfish sold at Lagos markets, particularly coastal and waterfront areas. 11g protein per 100g shelled meat. Often eaten with palm wine or added to soups. High in iron, omega-3, and B12. A unique Lagos protein option that most people don\'t consider. Shell-picking is laborious — price reflects this.',
+    tags:['11g per 100g','B12 source','Coastal markets','₦500–1,500/portion'] },
+];
+
+let srcFilter = 'all';
+let srcSearch = '';
+
+function renderSources(){
+  const container = document.getElementById('sources-container');
+  let filtered = SOURCES.filter(s => {
+    const matchTier = srcFilter === 'all' || s.tier === srcFilter;
+    const q = srcSearch.toLowerCase();
+    const matchSearch = !q || s.name.toLowerCase().includes(q) || s.detail.toLowerCase().includes(q) || s.tags.some(t=>t.toLowerCase().includes(q));
+    return matchTier && matchSearch;
+  });
+
+  document.getElementById('src-count').textContent = filtered.length + ' sources';
+
+  const t1 = filtered.filter(s=>s.tier==='tier1');
+  const t2 = filtered.filter(s=>s.tier==='tier2');
+  const t3 = filtered.filter(s=>s.tier==='tier3');
+
+  let html = `<div class="guide-heading">Protein Sources</div>
+  <div class="guide-sub">${filtered.length} OF ${SOURCES.length} SOURCES · RANKED BY PROTEIN VALUE · LAGOS ACCESSIBLE · SERVING SIZES INCLUDED</div>`;
+
+  const renderGroup = (items, label, cls) => {
+    if(!items.length) return '';
+    let g = `<div class="div gold">${label}</div>`;
+    items.forEach(s => {
+      g += `<div class="source-card ${s.tier}">
+        <div class="source-top">
+          <div class="source-left">
+            <div class="source-icon-name"><span class="source-icon">${s.icon}</span><span class="source-name">${s.name}</span></div>
+            <span class="source-tier">${s.tier === 'tier1' ? 'Tier 1' : s.tier === 'tier2' ? 'Tier 2' : 'Tier 3'} · ${s.freq}</span>
+            <div class="source-serving">Serving: ${s.serving}</div>
+            <div class="source-detail">${s.detail}</div>
+            <div class="source-tags">${s.tags.map(t=>`<span class="source-tag">${t}</span>`).join('')}</div>
+          </div>
+          <div><div class="source-protein-big">${s.protein}g</div><div class="source-protein-label">per serving</div><div style="font-family:'DM Mono',monospace;font-size:7px;color:var(--muted);text-align:right;margin-top:3px;letter-spacing:.5px">${s.price}</div></div>
+        </div>
+      </div>`;
+    });
+    return g;
+  };
+
+  html += renderGroup(t1, 'Tier 1 — Primary Sources', 'tier1');
+  html += renderGroup(t2, 'Tier 2 — Supporting Sources', 'tier2');
+  html += renderGroup(t3, 'Tier 3 — Supplementary', 'tier3');
+
+  if(!filtered.length) html += `<div style="text-align:center;padding:30px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">No sources match your search.</div>`;
+
+  container.innerHTML = html;
+}
+
+function setSrcFilter(f, btn){
+  srcFilter = f;
+  document.querySelectorAll('.src-filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderSources();
+}
+
+function filterSources(){
+  srcSearch = document.getElementById('src-search').value;
+  renderSources();
+}
+
+const WEEKLY = [
+  { day:'Monday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Beef serving',p:30},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15},{name:'Rice/Yam',p:5}
+  ], total:132 },
+  { day:'Tuesday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Chicken drumstick',p:18},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15},{name:'Rice/Yam',p:5}
+  ], total:120 },
+  { day:'Wednesday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Beef serving',p:30},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15},{name:'Yam/Rice',p:5}
+  ], total:132 },
+  { day:'Thursday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Mackerel',p:25},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15},{name:'Rice',p:5}
+  ], total:127 },
+  { day:'Friday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Beef serving',p:30},{name:'Chicken drumstick',p:18},{name:'5 Groundnut sachets',p:15},{name:'Rice/Yam',p:5}
+  ], total:135 },
+  { day:'Saturday', badge:'med', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Catfish',p:25},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15}
+  ], total:122 },
+  { day:'Sunday', badge:'high', items:[
+    {name:'7 Eggs',p:42},{name:'1 Tin Tuna',p:25},{name:'Beef serving',p:30},{name:'1 Cup Beans',p:15},{name:'5 Groundnut sachets',p:15},{name:'Rice/Yam',p:5}
+  ], total:132 },
+];
+
+// ── STATE ──────────────────────────────────────
+let S = JSON.parse(localStorage.getItem('fuel_protocol') || '{}');
+if(!S.logs)S.logs={};
+if(!S.sealed)S.sealed=[];
+if(!S.daysLogged)S.daysLogged=0;
+
+// ── DATE NAVIGATION ────────────────────────────
+let currentOffset = 0; // 0 = today, -1 = yesterday, etc.
+
+function getDateKey(offset){
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().split('T')[0];
+}
+
+function dk(){ return getDateKey(currentOffset); }
+
+function todayLog(){ return S.logs[dk()] || {items:[],custom:[]}; }
+function setTodayLog(l){ S.logs[dk()] = l; sv(); }
+function sv(){ localStorage.setItem('fuel_protocol', JSON.stringify(S)); }
+
+function formatDateLabel(offset){
+  if(offset === 0) return 'Today';
+  if(offset === -1) return 'Yesterday';
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+}
+
+function formatDateSub(offset){
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+}
+
+function navDay(delta){
+  const newOffset = currentOffset + delta;
+  if(newOffset > 0) return; // can't go to future
+  currentOffset = newOffset;
+  updateDateNav();
+  renderFoodGrid();
+  renderLogList();
+  updMeter();
+}
+
+function goToday(){
+  currentOffset = 0;
+  updateDateNav();
+  renderFoodGrid();
+  renderLogList();
+  updMeter();
+}
+
+function updateDateNav(){
+  document.getElementById('date-label').textContent = formatDateLabel(currentOffset);
+  document.getElementById('date-sub').textContent = formatDateSub(currentOffset);
+  document.getElementById('nav-fwd').disabled = currentOffset >= 0;
+  const banner = document.getElementById('past-banner');
+  if(currentOffset < 0){
+    banner.classList.add('show');
+    banner.textContent = `✦ Logging for ${formatDateLabel(currentOffset)} (${getDateKey(currentOffset)}) — data saved to that date`;
+  } else {
+    banner.classList.remove('show');
+  }
+  // Update heading in logger
+  const heading = document.querySelector('.logger-heading');
+  if(heading) heading.textContent = currentOffset === 0 ? 'Daily Protein Log' : `Protein Log — ${formatDateLabel(currentOffset)}`;
+}
+
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── PROTEIN CALCULATION ────────────────────────
+function calcProtein(){
+  const log=todayLog();
+  let total=0;
+  (log.items||[]).forEach(item=>{
+    const food=FOODS.find(f=>f.id===item.id);
+    if(food)total+=food.protein*item.qty;
+  });
+  (log.custom||[]).forEach(item=>{ total+=item.protein; });
+  return total;
+}
+
+function updMeter(){
+  const p=calcProtein();
+  const target=135;
+  const pct=Math.min(100,Math.round((p/target)*100));
+  document.getElementById('meter-val').textContent=p;
+  document.getElementById('meter-pct').textContent=pct+'%';
+  document.getElementById('meter-fill').style.width=pct+'%';
+}
+
+function updStats(){
+  const days=Object.keys(S.logs).length;
+  const totals=Object.values(S.logs).map(l=>{
+    let t=0;
+    (l.items||[]).forEach(item=>{const f=FOODS.find(x=>x.id===item.id);if(f)t+=f.protein*item.qty;});
+    (l.custom||[]).forEach(item=>{t+=item.protein;});
+    return t;
+  });
+  const avg=totals.length?Math.round(totals.reduce((a,b)=>a+b,0)/totals.length):0;
+  const onTarget=totals.filter(t=>t>=110).length;
+  document.getElementById('s1').textContent=days;
+  document.getElementById('s2').textContent=avg?avg+'g':'0';
+  document.getElementById('s3').textContent=onTarget;
+}
+
+// ── TAB SWITCH ─────────────────────────────────
+function sw(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.tb').forEach((t,j)=>t.classList.toggle('on',j===i));
+  document.querySelectorAll('.tb')[i]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+// ── FOOD GRID ──────────────────────────────────
+function renderFoodGrid(){
+  const log=todayLog();
+  const container=document.getElementById('food-grid');
+  container.innerHTML=FOODS.map(food=>{
+    const loggedItem=log.items?.find(i=>i.id===food.id);
+    const qty=loggedItem?loggedItem.qty:food.defaultQty;
+    const logged=!!loggedItem;
+    const totalP=food.protein*qty;
+    return `<div class="food-card ${food.cls} ${logged?'logged':''}" id="fc-${food.id}">
+      <div class="food-logged-badge">✓</div>
+      <div class="food-icon">${food.icon}</div>
+      <div class="food-name">${food.name}</div>
+      <div><span class="food-protein">${totalP}</span><span class="food-protein-unit">g</span></div>
+      <div class="food-portion">${qty} ${food.unit} · ${food.portionLabel}</div>
+      <div class="food-qty">
+        <button class="food-qty-btn" onclick="changeQty('${food.id}',-1);event.stopPropagation()">−</button>
+        <div class="food-qty-val" id="qty-${food.id}">${qty}</div>
+        <button class="food-qty-btn" onclick="changeQty('${food.id}',1);event.stopPropagation()">+</button>
+        <button style="margin-left:auto;padding:3px 10px;background:${logged?'var(--green2)':'var(--ink)'};color:white;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;transition:all .15s" onclick="toggleFood('${food.id}')">
+          ${logged?'Logged':'Log'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function changeQty(id,delta){
+  const el=document.getElementById('qty-'+id);
+  if(!el)return;
+  let val=parseInt(el.textContent)+delta;
+  if(val<1)val=1;
+  if(val>50)val=50;
+  el.textContent=val;
+  const log=todayLog();
+  const item=log.items?.find(i=>i.id===id);
+  if(item){item.qty=val;setTodayLog(log);updMeter();renderLogList();}
+}
+
+function toggleFood(id){
+  const log=todayLog();
+  if(!log.items)log.items=[];
+  const idx=log.items.findIndex(i=>i.id===id);
+  if(idx>-1){
+    log.items.splice(idx,1);
+  } else {
+    const qtyEl=document.getElementById('qty-'+id);
+    const qty=qtyEl?parseInt(qtyEl.textContent):(FOODS.find(f=>f.id===id)?.defaultQty||1);
+    log.items.push({id,qty});
+  }
+  setTodayLog(log);
+  renderFoodGrid();
+  renderLogList();
+  updMeter();
+  updStats();
+}
+
+function renderLogList(){
+  const log=todayLog();
+  const container=document.getElementById('log-list');
+  const empty=document.getElementById('log-empty');
+  const allItems=[
+    ...(log.items||[]).map(item=>{
+      const food=FOODS.find(f=>f.id===item.id);
+      return food?{name:`${food.icon} ${food.name}`,detail:`${item.qty} ${food.unit}`,protein:food.protein*item.qty,custom:false,id:item.id}:null;
+    }).filter(Boolean),
+    ...(log.custom||[]).map((item,i)=>({
+      name:`✦ ${item.name}`,detail:item.portion||'Custom',protein:item.protein,custom:true,customIdx:i
+    }))
+  ];
+
+  if(!allItems.length){
+    container.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+  container.innerHTML=allItems.map(item=>`
+    <div class="log-entry">
+      <div class="log-entry-left">
+        <div class="log-entry-name">${item.name}</div>
+        <div class="log-entry-detail">${item.detail}</div>
+      </div>
+      <div class="log-entry-protein">${item.protein}g</div>
+      <button class="log-entry-del" onclick="${item.custom?`removeCustom(${item.customIdx})`:`toggleFood('${item.id}')`}">×</button>
+    </div>`).join('');
+}
+
+// ── CUSTOM FOOD ────────────────────────────────
+function addCustom(){
+  const name=document.getElementById('cf-name').value.trim();
+  const protein=parseFloat(document.getElementById('cf-protein').value);
+  const portion=document.getElementById('cf-portion').value.trim();
+  if(!name||!protein||protein<0){toast('Fill in food name and protein amount');return;}
+  const log=todayLog();
+  if(!log.custom)log.custom=[];
+  log.custom.push({name,protein,portion});
+  setTodayLog(log);
+  document.getElementById('cf-name').value='';
+  document.getElementById('cf-protein').value='';
+  document.getElementById('cf-portion').value='';
+  renderLogList();updMeter();updStats();
+  toast(`Added ${name} — ${protein}g protein`);
+}
+
+function removeCustom(idx){
+  const log=todayLog();
+  log.custom.splice(idx,1);
+  setTodayLog(log);
+  renderLogList();updMeter();updStats();
+}
+
+// ── SEAL / RESET ───────────────────────────────
+function sealNutrition(){
+  const p=calcProtein();
+  if(!S.sealed.includes(dk()))S.sealed.push(dk());
+  sv();updStats();
+  const dayLabel = currentOffset === 0 ? 'today' : formatDateLabel(currentOffset);
+  if(p>=110)toast(`✦ ${p}g logged for ${dayLabel} — On target.`);
+  else if(p>=70)toast(`${p}g for ${dayLabel} — Building. Push for more.`);
+  else toast(`${p}g for ${dayLabel} — Below target. Add tuna and beans.`);
+}
+
+function resetNutrition(){
+  const dayLabel = currentOffset === 0 ? 'today' : formatDateLabel(currentOffset);
+  if(confirm(`Reset ${dayLabel}'s nutrition log?`)){
+    delete S.logs[dk()];sv();
+    renderFoodGrid();renderLogList();updMeter();updStats();
+  }
+}
+
+// ── WEEKLY PLAN ────────────────────────────────
+function renderWeekly(){
+  const container=document.getElementById('weekly-plan');
+  container.innerHTML=WEEKLY.map(day=>`
+    <div class="week-day-card">
+      <div class="week-day-header">
+        <div class="wdh-day">${day.day}</div>
+        <span class="wdh-badge ${day.badge}">${day.badge==='high'?'On Target':'Good'}</span>
+        <div class="wdh-protein">${day.total}g</div>
+      </div>
+      <div class="week-day-items">
+        ${day.items.map(item=>`<div class="wdi"><div class="wdi-dot"></div>${item.name}<div class="wdi-p">+${item.p}g</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ── BACKUP ─────────────────────────────────────
+function togBK(){
+  const p=document.getElementById('bkp'),icon=document.getElementById('bki');
+  p.classList.toggle('on');
+  icon.textContent=p.classList.contains('on')?'▲':'▼';
+}
+function expD(){
+  const code=btoa(JSON.stringify(S));
+  const ta=document.getElementById('bkexp');
+  document.getElementById('bkimp').classList.remove('show');
+  document.getElementById('bkrb').classList.remove('show');
+  ta.classList.add('show');ta.value=code;ta.select();
+  try{document.execCommand('copy');toast('Backup copied — save it safely');}
+  catch(e){toast('Backup ready — copy manually');}
+}
+function showImp(){
+  document.getElementById('bkexp').classList.remove('show');
+  document.getElementById('bkimp').classList.add('show');
+  document.getElementById('bkrb').classList.add('show');
+  document.getElementById('bkimp').value='';
+  document.getElementById('bkimp').focus();
+}
+function impD(){
+  try{
+    const parsed=JSON.parse(atob(document.getElementById('bkimp').value.trim()));
+    if(!parsed.logs)throw new Error();
+    S=parsed;sv();init();toast('Data restored.');
+  }catch(e){toast('Invalid backup code');}
+}
+function clrD(){
+  if(confirm('Clear all nutrition data?')){
+    S={logs:{},sealed:[],daysLogged:0};sv();init();toast('Cleared.');
+  }
+}
+
+// ── INIT ───────────────────────────────────────
+function init(){
+  updateDateNav();
+  renderFoodGrid();
+  renderLogList();
+  renderWeekly();
+  renderSources();
+  updMeter();
+  updStats();
+}
+
+init();
+</script>
+</body>
+</html>
